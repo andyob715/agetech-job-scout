@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgeTech Job Scout</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EE;
+    --warm-white: #FDFAF6;
+    --charcoal: #1C1C1E;
+    --slate: #4A4A52;
+    --muted: #8A8A94;
+    --border: #E2DDD8;
+    --accent: #C8622A;
+    --accent-light: #F2E8E0;
+    --green: #2D6A4F;
+    --green-light: #D8EFE4;
+    --amber: #B5860D;
+    --amber-light: #FBF3DC;
+    --red: #B03A2E;
+    --red-light: #FAE5E2;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--charcoal);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 3px solid var(--accent);
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--warm-white);
+    letter-spacing: -0.02em;
+  }
+  header .tagline {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-badge {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .header-badge .dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .controls {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 48px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--cream);
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+
+  .filter-btn {
+    padding: 9px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--slate);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--charcoal); color: var(--warm-white); border-color: var(--charcoal); }
+
+  .stats-bar {
+    padding: 12px 48px;
+    display: flex;
+    gap: 32px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--warm-white);
+    flex-wrap: wrap;
+  }
+  .stats-bar strong { color: var(--charcoal); font-weight: 600; }
+
+  .pillar-explainer {
+    padding: 14px 48px;
+    background: var(--accent-light);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--slate);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .pillar-explainer strong { color: var(--charcoal); }
+
+  .grid {
+    padding: 32px 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .card.strong-pick { border-color: var(--green); border-width: 1.5px; }
+
+  .card-header {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .company-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    line-height: 1.2;
+  }
+  .category-tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--accent-light);
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  .pillars {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .pillar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: help;
+  }
+  .pillar.pass { background: var(--green-light); color: var(--green); }
+  .pillar.warn { background: var(--amber-light); color: var(--amber); }
+  .pillar.fail { background: var(--red-light); color: var(--red); }
+  .pillar.unknown { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
+  .pillar-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  .card-body { padding: 14px 22px; flex: 1; }
+  .card-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .card-meta a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .card-meta a:hover { text-decoration: underline; }
+
+  .card-notes {
+    font-size: 0.78rem;
+    color: var(--slate);
+    line-height: 1.55;
+    padding: 8px 10px;
+    background: var(--cream);
+    border-radius: 5px;
+    border-left: 2px solid var(--border);
+  }
+
+  .jobs-section { padding: 0 22px 18px; }
+
+  .jobs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .jobs-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .refresh-btn {
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .refresh-btn:hover { background: var(--accent-light); }
+  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .fetch-btn {
+    width: 100%;
+    padding: 9px;
+    border: 1.5px dashed var(--border);
+    border-radius: 6px;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .fetch-btn:hover { border-color: var(--accent); color: var(--accent); border-style: solid; background: var(--accent-light); }
+
+  .jobs-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .job-item {
+    padding: 10px 12px;
+    background: var(--cream);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    animation: fadeIn 0.3s ease;
+    position: relative;
+  }
+  .job-item.curated { border-left-color: var(--green); }
+  .job-item.live { border-left-color: var(--accent); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .job-title { font-size: 0.85rem; font-weight: 600; color: var(--charcoal); margin-bottom: 3px; }
+  .job-meta { font-size: 0.74rem; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+  .job-source {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 0.65rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .job-apply {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.74rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .job-apply:hover { text-decoration: underline; }
+
+  .no-jobs { text-align: center; padding: 12px; font-size: 0.8rem; color: var(--muted); font-style: italic; }
+
+  .loading-dots { display: flex; gap: 4px; justify-content: center; padding: 14px; }
+  .loading-dots span {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: bounce 0.9s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  .legend {
+    padding: 16px 48px;
+    border-top: 1px solid var(--border);
+    background: var(--warm-white);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .legend-title { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--slate); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  .empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; color: var(--slate); }
+
+  @media (max-width: 640px) {
+    header, .controls, .stats-bar, .grid, .legend, .pillar-explainer { padding-left: 20px; padding-right: 20px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>AgeTech Job Scout</h1>
+    <div class="tagline">2025 Market Map · 3-Pillar Evaluation Framework</div>
+  </div>
+  <div class="header-badge">
+    <span class="dot"></span>
+    AI-powered · Built with Claude
+  </div>
+</header>
+
+<div class="pillar-explainer">
+  <strong>How companies are evaluated:</strong>
+  <span><strong>P1 Real & Funded</strong> — Actual product in market + Series A or higher ($20M+)</span>
+  <span><strong>P2 Mission Clarity</strong> — How clearly & consistently the mission is articulated and lived</span>
+  <span><strong>P3 Right Size</strong> — 50–300 employees; room for real product leadership impact</span>
+</div>
+
+<div class="controls">
+  <input class="search-input" type="text" id="searchInput" placeholder="Search companies or categories..." oninput="renderGrid()">
+  <button class="filter-btn active" onclick="setFilter('all', this)">All Companies</button>
+  <button class="filter-btn" onclick="setFilter('strong', this)">⭐ Strong Picks</button>
+  <button class="filter-btn" onclick="setFilter('warn', this)">~ Watchlist</button>
+  <button class="filter-btn" onclick="setFilter('has-jobs', this)">💼 Has Jobs</button>
+</div>
+
+<div class="stats-bar">
+  <span><strong id="statVisible">0</strong> companies shown</span>
+  <span><strong id="statStrong">0</strong> strong picks</span>
+  <span><strong id="statJobs">0</strong> open jobs found</span>
+  <span><strong id="statFetched">0</strong> live-fetched</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="legend">
+  <span class="legend-title">Pillar ratings:</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Passes</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span> Uncertain / mixed signals</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--border)"></span> Not yet researched</span>
+  <span style="margin-left:auto;font-size:0.74rem;color:var(--muted)">
+    Green border = passes all 3 pillars · Job data sourced via Claude AI
+  </span>
+</div>
+
+<script>
+// ─── COMPANY DATA ─────────────────────────────────────────────────────────────
+// p1 = Real & Funded | p2 = Mission Clarity | p3 = Right Size
+// curatedJobs = pre-loaded roles we know about (shown instantly, no API call needed)
+const COMPANIES = [
+  {
+    name: "Honor", category: "Tech-Enabled Home Care",
+    website: "https://www.honor.com", careers: "https://www.honor.com/careers/",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series E, large-scale in-home care network. Acquired Home Instead.",
+    curatedJobs: [
+      { title: "Director of Product", department: "Product", location: "Remote", type: "Full-time" },
+      { title: "Senior Product Manager", department: "Product", location: "Remote", type: "Full-time" },
+    ]
+  },
+  {
+    name: "Papa", category: "Everyday Assistance",
+    website: "https://www.papa.com", careers: "https://www.papa.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series D. Pairs older adults & families with 'Papa Pals' for companionship and assistance.",
+    curatedJobs: [
+      { title: "Senior Product Manager", department: "Product", location: "Remote", type: "Full-time" },
+    ]
+  },
+  {
+    name: "GetSetUp", category: "Retirement 2.0",
+    website: "https://www.getsetup.io", careers: "https://www.getsetup.io/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Online learning and community platform designed specifically for older adults.",
+    curatedJobs: []
+  },
+  {
+    name: "Wellthy", category: "For Caregivers",
+    website: "https://wellthy.com", careers: "https://wellthy.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Employer-sponsored caregiver support — care coordinators + digital tools.",
+    curatedJobs: [
+      { title: "Head of Product", department: "Product", location: "Remote", type: "Full-time" },
+    ]
+  },
+  {
+    name: "CareAcademy", category: "For Home Care Providers",
+    website: "https://careacademy.com", careers: "https://careacademy.com/careers/",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Training and compliance platform for home care agencies and caregivers.",
+    curatedJobs: []
+  },
+  {
+    name: "Sensi.Ai", category: "For Home Care Providers",
+    website: "https://sensi.ai", careers: "https://sensi.ai/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "AI-powered audio monitoring for in-home care quality and safety.",
+    curatedJobs: []
+  },
+  {
+    name: "Careforth", category: "For Caregivers",
+    website: "https://careforth.com", careers: "https://careforth.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Formerly Seniorlink. Series C. Technology-enabled caregiver coaching and support.",
+    curatedJobs: []
+  },
+  {
+    name: "Ianacare", category: "For Caregivers",
+    website: "https://ianacare.com", careers: "https://ianacare.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series A. Employer benefit that mobilizes a care team around family caregivers.",
+    curatedJobs: []
+  },
+  {
+    name: "Torchlight", category: "For Caregivers",
+    website: "https://www.torchlight.care", careers: "https://www.torchlight.care/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Employer-based caregiver support platform. B2B SaaS model.",
+    curatedJobs: []
+  },
+  {
+    name: "True Link", category: "Scam & Fraud Protection",
+    website: "https://www.truelinkfinancial.com", careers: "https://www.truelinkfinancial.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Financial safety products for older adults and people with disabilities.",
+    curatedJobs: [
+      { title: "Product Manager", department: "Product", location: "San Francisco / Remote", type: "Full-time" },
+    ]
+  },
+  {
+    name: "Carefull", category: "Scam & Fraud Protection",
+    website: "https://getcarefull.com", careers: "https://getcarefull.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Financial monitoring and protection platform built specifically for older adults.",
+    curatedJobs: []
+  },
+  {
+    name: "BrainCheck", category: "Cognitive Care",
+    website: "https://braincheck.com", careers: "https://braincheck.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Digital cognitive assessment for healthcare providers.",
+    curatedJobs: []
+  },
+  {
+    name: "GrandPad", category: "Companionship & Communication",
+    website: "https://www.grandpad.net", careers: "https://www.grandpad.net/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Simplified tablet and platform for connecting isolated seniors with family.",
+    curatedJobs: []
+  },
+  {
+    name: "GoGo", category: "Transportation",
+    website: "https://gogotranstech.com", careers: "https://gogotranstech.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Non-emergency medical and senior transportation platform.",
+    curatedJobs: []
+  },
+  {
+    name: "Seniorly", category: "Housing",
+    website: "https://www.seniorly.com", careers: "https://www.seniorly.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Senior living marketplace and advisory platform.",
+    curatedJobs: []
+  },
+  {
+    name: "Willful", category: "End of Life Planning",
+    website: "https://willful.co", careers: "https://willful.co/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series A. Online wills and estate planning — accessible, affordable, digital-first.",
+    curatedJobs: []
+  },
+  {
+    name: "FreeWill", category: "End of Life Planning",
+    website: "https://www.freewill.com", careers: "https://www.freewill.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Nonprofit-focused estate planning and charitable giving platform.",
+    curatedJobs: [
+      { title: "Product Manager", department: "Product", location: "Remote", type: "Full-time" },
+    ]
+  },
+  {
+    name: "MyndYou", category: "For Healthcare Providers",
+    website: "https://myndyou.com", careers: "https://myndyou.com/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series A. AI-powered care navigation and patient engagement for health systems.",
+    curatedJobs: []
+  },
+  {
+    name: "VirtuSense", category: "For Healthcare Providers",
+    website: "https://virtusense.ai", careers: "https://virtusense.ai/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "AI-powered fall prevention and risk assessment in senior care settings.",
+    curatedJobs: []
+  },
+  {
+    name: "Birdie", category: "For Home Care Providers",
+    website: "https://birdie.care", careers: "https://birdie.care/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series B. Care management and analytics platform for home care agencies (UK-based).",
+    curatedJobs: []
+  },
+  {
+    name: "Cera Care", category: "Tech-Enabled Home Care",
+    website: "https://ceracare.co.uk", careers: "https://ceracare.co.uk/careers/",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series D. UK-based tech-enabled home care with predictive health analytics.",
+    curatedJobs: []
+  },
+  {
+    name: "Homage", category: "Tech-Enabled Home Care",
+    website: "https://www.homage.com.sg", careers: "https://www.homage.com.sg/careers",
+    p1: "pass", p2: "pass", p3: "pass",
+    notes: "Series C. Southeast Asia's leading tech-enabled home care platform.",
+    curatedJobs: []
+  },
+  {
+    name: "Hively", category: "Retirement 2.0",
+    website: "https://gethively.com", careers: "https://gethively.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Retirement lifestyle platform. Earlier stage — funding and size not fully confirmed.",
+    curatedJobs: []
+  },
+  {
+    name: "Neurotrack", category: "Cognitive Care",
+    website: "https://neurotrack.com", careers: "https://neurotrack.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Brain health assessment platform. Mixed signals on current scale and runway.",
+    curatedJobs: []
+  },
+  {
+    name: "Lottie", category: "For Caregivers",
+    website: "https://lottie.org", careers: "https://lottie.org/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "UK-based care marketplace. Growing but earlier stage.",
+    curatedJobs: []
+  },
+  {
+    name: "Aidaly", category: "For Caregivers",
+    website: "https://www.aidaly.com", careers: "https://www.aidaly.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Pays family caregivers through Medicaid. Novel model, still early.",
+    curatedJobs: []
+  },
+  {
+    name: "Naborforce", category: "Everyday Assistance",
+    website: "https://naborforce.com", careers: "https://naborforce.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Neighbor-based companion services for older adults. Sweet mission, earlier stage.",
+    curatedJobs: []
+  },
+  {
+    name: "EverSafe", category: "Scam & Fraud Protection",
+    website: "https://www.eversafe.com", careers: "https://www.eversafe.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Financial monitoring for seniors. Unclear on current funding stage.",
+    curatedJobs: []
+  },
+  {
+    name: "Onward", category: "Transportation",
+    website: "https://www.rideonward.com", careers: "https://www.rideonward.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Senior-focused rideshare companion service. Earlier stage.",
+    curatedJobs: []
+  },
+  {
+    name: "Silvur", category: "Finance",
+    website: "https://www.silvur.com", careers: "https://www.silvur.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Retirement planning app for pre-retirees. Mission clear, scale uncertain.",
+    curatedJobs: []
+  },
+  {
+    name: "MemoryWell", category: "For Healthcare Providers",
+    website: "https://memorywell.com", careers: "https://memorywell.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Life story collection platform for care settings. Meaningful but earlier stage.",
+    curatedJobs: []
+  },
+  {
+    name: "Nesterly", category: "Housing",
+    website: "https://www.nesterly.io", careers: "https://www.nesterly.io/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Intergenerational home sharing platform. Creative model, earlier stage.",
+    curatedJobs: []
+  },
+  {
+    name: "Storii", category: "For Adult Day",
+    website: "https://storii.com", careers: "https://storii.com/careers",
+    p1: "warn", p2: "pass", p3: "warn",
+    notes: "Digital storytelling platform for adult day and senior living settings.",
+    curatedJobs: []
+  },
+  {
+    name: "Carevaya", category: "Everyday Assistance",
+    website: "https://carevaya.com", careers: "https://carevaya.com/careers",
+    p1: "unknown", p2: "unknown", p3: "unknown",
+    notes: "Not yet researched.",
+    curatedJobs: []
+  },
+  {
+    name: "Kuvu", category: "Housing",
+    website: "https://kuvu.com", careers: "https://kuvu.com/careers",
+    p1: "unknown", p2: "unknown", p3: "unknown",
+    notes: "Not yet researched.",
+    curatedJobs: []
+  },
+  {
+    name: "Seniorverse", category: "For Adult Day",
+    website: "https://seniorverse.com", careers: "https://seniorverse.com/careers",
+    p1: "unknown", p2: "unknown", p3: "unknown",
+    notes: "Not yet researched.",
+    curatedJobs: []
+  },
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────────
+let currentFilter = 'all';
+let liveJobsState = {}; // { companyName: { status, jobs } }
+
+// ─── FETCH LIVE JOBS (calls our Vercel backend proxy) ─────────────────────────
+async function fetchLiveJobs(companyName) {
+  const company = COMPANIES.find(c => c.name === companyName);
+  if (!company) return;
+
+  liveJobsState[companyName] = { status: 'loading', jobs: [] };
+  renderGrid();
+
+  try {
+    const res = await fetch('/api/jobs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        companyName: company.name,
+        careersUrl: company.careers,
+        category: company.category,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || `Error ${res.status}`);
+    }
+
+    const data = await res.json();
+    liveJobsState[companyName] = { status: 'done', jobs: data.jobs || [] };
+  } catch (err) {
+    liveJobsState[companyName] = { status: 'error', jobs: [], error: err.message };
+  }
+
+  renderGrid();
+}
+
+// ─── RENDER ────────────────────────────────────────────────────────────────────
+function pillarBadge(label, value) {
+  const icons = { pass: '✓', warn: '~', fail: '✗', unknown: '?' };
+  const tooltips = {
+    'P1': 'Real & Funded: Real product in market + Series A or higher',
+    'P2': 'Mission Clarity: How clearly & consistently mission is articulated and lived',
+    'P3': 'Right Size: 50–300 employees with room for product leadership',
+  };
+  return `<span class="pillar ${value}" title="${tooltips[label]}">`
+    + `<span class="pillar-dot"></span>${label}: ${icons[value] || '?'}</span>`;
+}
+
+function renderJobsSection(company) {
+  const live = liveJobsState[company.name];
+  const curated = company.curatedJobs || [];
+
+  // Always show curated jobs
+  let curatedHTML = curated.map(j => `
+    <div class="job-item curated">
+      <span class="job-source">curated</span>
+      <div class="job-title">${j.title}</div>
+      <div class="job-meta">
+        ${j.department ? `<span>📁 ${j.department}</span>` : ''}
+        ${j.location ? `<span>📍 ${j.location}</span>` : ''}
+        ${j.type ? `<span>⏱ ${j.type}</span>` : ''}
+      </div>
+      <a class="job-apply" href="${company.careers}" target="_blank">View on careers page →</a>
+    </div>`).join('');
+
+  // Live jobs section
+  let liveHTML = '';
+  if (!live || live.status === 'idle' || !live) {
+    liveHTML = `<button class="fetch-btn" onclick="fetchLiveJobs('${company.name}')">⟳ Fetch live jobs via AI</button>`;
+  } else if (live.status === 'loading') {
+    liveHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+  } else if (live.status === 'done') {
+    const liveJobs = live.jobs.map(j => `
+      <div class="job-item live">
+        <span class="job-source">AI-sourced</span>
+        <div class="job-title">${j.title}</div>
+        <div class="job-meta">
+          ${j.department ? `<span>📁 ${j.department}</span>` : ''}
+          ${j.location ? `<span>📍 ${j.location}</span>` : ''}
+          ${j.type ? `<span>⏱ ${j.type}</span>` : ''}
+        </div>
+        ${j.url ? `<a class="job-apply" href="${j.url}" target="_blank">Apply →</a>` : `<a class="job-apply" href="${company.careers}" target="_blank">View careers →</a>`}
+      </div>`).join('');
+    liveHTML = liveJobs || `<div class="no-jobs">No additional roles found via AI</div>`;
+  } else if (live.status === 'error') {
+    liveHTML = `<div class="no-jobs" style="color:var(--red)">
+      Could not fetch live jobs. <button onclick="fetchLiveJobs('${company.name}')" style="color:var(--accent);background:none;border:none;cursor:pointer;font-size:0.78rem;font-family:inherit;">Retry</button>
+    </div>`;
+  }
+
+  const hasContent = curated.length > 0 || (live && live.status !== 'idle');
+  const refreshBtn = (live && live.status === 'done')
+    ? `<button class="refresh-btn" onclick="fetchLiveJobs('${company.name}')">↻ Refresh</button>`
+    : '';
+
+  return `
+    <div class="jobs-section">
+      ${hasContent ? `<div class="jobs-header"><span class="jobs-label">Open Roles</span>${refreshBtn}</div>` : ''}
+      <div class="jobs-list">
+        ${curatedHTML}
+        ${liveHTML}
+      </div>
+    </div>`;
+}
+
+function renderCard(company) {
+  const isStrong = company.p1 === 'pass' && company.p2 === 'pass' && company.p3 === 'pass';
+  const liveState = liveJobsState[company.name];
+  const liveJobCount = (liveState && liveState.status === 'done') ? liveState.jobs.length : 0;
+  const totalJobs = (company.curatedJobs || []).length + liveJobCount;
+
+  return `
+    <div class="card ${isStrong ? 'strong-pick' : ''}" 
+         data-name="${company.name.toLowerCase()}" 
+         data-category="${company.category.toLowerCase()}"
+         data-p1="${company.p1}" data-p2="${company.p2}" data-p3="${company.p3}"
+         data-has-jobs="${totalJobs > 0}">
+      <div class="card-header">
+        <div class="card-top">
+          <div class="company-name">${company.name}</div>
+          <span class="category-tag">${company.category}</span>
+        </div>
+        <div class="pillars">
+          ${pillarBadge('P1', company.p1)}
+          ${pillarBadge('P2', company.p2)}
+          ${pillarBadge('P3', company.p3)}
+          ${isStrong ? '<span class="pillar pass" style="font-weight:600;letter-spacing:-0.01em">⭐ Strong Pick</span>' : ''}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <a href="${company.website}" target="_blank">🌐 Website</a>
+          <a href="${company.careers}" target="_blank">💼 Careers Page</a>
+        </div>
+        ${company.notes ? `<div class="card-notes">${company.notes}</div>` : ''}
+      </div>
+      ${renderJobsSection(company)}
+    </div>`;
+}
+
+function renderGrid() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const grid = document.getElementById('grid');
+
+  let filtered = COMPANIES.filter(c => {
+    const matchSearch = !query
+      || c.name.toLowerCase().includes(query)
+      || c.category.toLowerCase().includes(query)
+      || (c.notes || '').toLowerCase().includes(query);
+
+    let matchFilter = true;
+    if (currentFilter === 'strong') {
+      matchFilter = c.p1 === 'pass' && c.p2 === 'pass' && c.p3 === 'pass';
+    } else if (currentFilter === 'warn') {
+      matchFilter = c.p1 === 'warn' || c.p2 === 'warn' || c.p3 === 'warn';
+    } else if (currentFilter === 'has-jobs') {
+      const live = liveJobsState[c.name];
+      const liveCount = (live && live.status === 'done') ? live.jobs.length : 0;
+      matchFilter = (c.curatedJobs || []).length > 0 || liveCount > 0;
+    }
+
+    return matchSearch && matchFilter;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><h3>No companies match</h3><p>Try a different search or filter</p></div>`;
+  } else {
+    grid.innerHTML = filtered.map(renderCard).join('');
+  }
+
+  updateStats(filtered);
+}
+
+function updateStats(filtered) {
+  const allStrong = COMPANIES.filter(c => c.p1 === 'pass' && c.p2 === 'pass' && c.p3 === 'pass').length;
+  const fetched = Object.values(liveJobsState).filter(s => s.status === 'done').length;
+  const totalJobs = COMPANIES.reduce((sum, c) => {
+    const live = liveJobsState[c.name];
+    return sum + (c.curatedJobs || []).length + ((live && live.status === 'done') ? live.jobs.length : 0);
+  }, 0);
+
+  document.getElementById('statVisible').textContent = filtered ? filtered.length : COMPANIES.length;
+  document.getElementById('statStrong').textContent = allStrong;
+  document.getElementById('statFetched').textContent = fetched;
+  document.getElementById('statJobs').textContent = totalJobs;
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+// ─── INIT ──────────────────────────────────────────────────────────────────────
+renderGrid();
+</script>
+</body>
+</html>
