@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgeTech Job Scout</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>AgeTech Job Scout — Andy O'Bryan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --cream: #F7F3EE;
@@ -339,9 +339,306 @@
   }
   .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; color: var(--slate); }
 
+  /* ── HEADER NAV BUTTONS ── */
+  .header-nav { display: flex; gap: 8px; margin-left: auto; align-items: center; }
+  .nav-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.07);
+    color: #ccc;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.14); color: white; }
+  .nav-btn.accent { background: var(--accent); border-color: var(--accent); color: white; }
+  .nav-btn.accent:hover { background: #a8501f; }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,20,22,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: var(--warm-white);
+    border-radius: 14px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+    overflow: hidden;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform: translateY(12px) scale(0.98); } to { opacity:1; transform: none; } }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none; border: none;
+    font-size: 1.4rem; color: var(--muted);
+    cursor: pointer; line-height: 1;
+    transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--charcoal); }
+
+  /* ── ABOUT MODAL ── */
+  .about-header {
+    background: var(--charcoal);
+    padding: 32px 36px 28px;
+    position: relative;
+  }
+  .about-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--warm-white);
+    margin-bottom: 4px;
+  }
+  .about-header .role {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .about-body { padding: 28px 36px 32px; }
+  .about-bio {
+    font-size: 0.93rem;
+    line-height: 1.75;
+    color: var(--slate);
+    margin-bottom: 24px;
+  }
+  .about-bio p { margin-bottom: 14px; }
+  .about-bio p:last-child { margin-bottom: 0; }
+  .about-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .about-btn {
+    padding: 11px 22px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.15s;
+  }
+  .about-btn.primary { background: var(--charcoal); color: white; border: none; }
+  .about-btn.primary:hover { background: #333; }
+  .about-btn.secondary { background: transparent; color: var(--charcoal); border: 1.5px solid var(--border); }
+  .about-btn.secondary:hover { border-color: var(--charcoal); }
+
+  /* ── CONTACT MODAL ── */
+  .contact-header {
+    background: var(--accent);
+    padding: 28px 36px 24px;
+    position: relative;
+  }
+  .contact-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 4px;
+  }
+  .contact-header p { font-size: 0.83rem; color: rgba(255,255,255,0.75); }
+  .contact-body { padding: 28px 36px 32px; }
+  .contact-body label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+  .contact-body label:first-of-type { margin-top: 0; }
+  .contact-body input,
+  .contact-body textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--cream);
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .contact-body input:focus,
+  .contact-body textarea:focus { border-color: var(--accent); }
+  .contact-body textarea { min-height: 100px; }
+  .contact-submit {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .contact-submit:hover { background: #a8501f; }
+  .contact-success {
+    text-align: center;
+    padding: 20px 0 8px;
+    display: none;
+  }
+  .contact-success .check { font-size: 2.5rem; margin-bottom: 10px; }
+  .contact-success h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 6px; }
+  .contact-success p { font-size: 0.85rem; color: var(--muted); }
+
+  /* ── HOW I BUILT THIS PANEL ── */
+  .built-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,20,22,0.7);
+    z-index: 200;
+    justify-content: flex-end;
+    backdrop-filter: blur(3px);
+  }
+  .built-overlay.open { display: flex; }
+
+  .built-panel {
+    background: var(--warm-white);
+    width: min(680px, 100vw);
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: -20px 0 60px rgba(0,0,0,0.2);
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  .built-hero {
+    background: var(--charcoal);
+    padding: 48px 48px 40px;
+    position: relative;
+    border-bottom: 3px solid var(--accent);
+  }
+  .built-hero h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--warm-white);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .built-hero p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+  .built-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .built-close:hover { background: rgba(255,255,255,0.2); color: white; }
+
+  .built-content { padding: 40px 48px 60px; }
+
+  .built-section { margin-bottom: 40px; }
+  .built-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--charcoal);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .built-section p {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: var(--slate);
+    margin-bottom: 12px;
+  }
+  .built-section p:last-child { margin-bottom: 0; }
+
+  .pillar-card {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--accent);
+  }
+  .pillar-card h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+  }
+  .pillar-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .tech-tag {
+    padding: 5px 12px;
+    background: var(--charcoal);
+    color: var(--warm-white);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .built-cta {
+    background: var(--accent-light);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .built-cta p { font-size: 0.88rem; color: var(--slate); margin-bottom: 14px; }
+  .built-cta a {
+    display: inline-block;
+    padding: 11px 24px;
+    background: var(--charcoal);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .built-cta a:hover { background: #333; }
+
   @media (max-width: 640px) {
     header, .controls, .stats-bar, .grid, .legend, .pillar-explainer { padding-left: 20px; padding-right: 20px; }
     .grid { grid-template-columns: 1fr; }
+    .built-hero, .built-content { padding-left: 24px; padding-right: 24px; }
+    .about-header, .about-body, .contact-header, .contact-body { padding-left: 24px; padding-right: 24px; }
   }
 </style>
 </head>
@@ -352,9 +649,14 @@
     <h1>AgeTech Job Scout</h1>
     <div class="tagline">2025 Market Map · 3-Pillar Evaluation Framework</div>
   </div>
-  <div class="header-badge">
-    <span class="dot"></span>
-    AI-powered · Built with Claude
+  <div class="header-nav">
+    <div class="header-badge">
+      <span class="dot"></span>
+      AI-powered · Built with Claude
+    </div>
+    <button class="nav-btn" onclick="openAbout()">👤 About</button>
+    <button class="nav-btn" onclick="openContact()">✉ Say Hello</button>
+    <button class="nav-btn accent" onclick="openBuilt()">⚙ How I Built This</button>
   </div>
 </header>
 
@@ -859,6 +1161,168 @@ function setFilter(filter, btn) {
 
 // ─── INIT ──────────────────────────────────────────────────────────────────────
 renderGrid();
+</script>
+<!-- ── ABOUT MODAL ─────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="aboutOverlay" onclick="if(event.target===this)closeAbout()">
+  <div class="modal-box" style="position:relative">
+    <div class="about-header">
+      <button class="modal-close" onclick="closeAbout()">×</button>
+      <h2>Andy O'Bryan</h2>
+      <div class="role">Senior Product Manager · AgeTech Focus</div>
+    </div>
+    <div class="about-body">
+      <div class="about-bio">
+        <p>I build B2B products in regulated environments — healthcare, fintech, complex systems where getting things right actually matters.</p>
+        <p>Over the past decade I've owned messy, high-stakes workflows at the intersection of technology, operations, and trust. I'm most useful when problems are ambiguous, priorities compete, and someone needs to help a team turn complexity into something concrete enough to ship.</p>
+        <p>Right now I'm focused on AgeTech — because the people on the other end of these products deserve tools that actually work for them. I built this tool to understand the landscape, think in public, and find the companies worth talking to.</p>
+      </div>
+      <div class="about-actions">
+        <a class="about-btn primary" href="https://www.linkedin.com/in/andyobryan715" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Connect on LinkedIn
+        </a>
+        <button class="about-btn secondary" onclick="closeAbout();openContact()">✉ Send a Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTACT MODAL ───────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="contactOverlay" onclick="if(event.target===this)closeContact()">
+  <div class="modal-box" style="position:relative">
+    <div class="contact-header">
+      <button class="modal-close" style="color:rgba(255,255,255,0.7)" onclick="closeContact()">×</button>
+      <h2>Say Hello</h2>
+      <p>A thought on AgeTech, a job lead, or just want to connect — I'd love to hear from you.</p>
+    </div>
+    <div class="contact-body">
+      <div id="contactForm">
+        <form action="https://formspree.io/f/xdalrgkp" method="POST" onsubmit="handleContactSubmit(event)">
+          <label>Your Name</label>
+          <input type="text" name="name" placeholder="Jane Smith" required />
+          <label>Email</label>
+          <input type="email" name="email" placeholder="jane@company.com" required />
+          <label>Your Message</label>
+          <textarea name="message" placeholder="I came across your AgeTech Job Scout and wanted to reach out..." required></textarea>
+          <button type="submit" class="contact-submit">Send Message →</button>
+        </form>
+      </div>
+      <div class="contact-success" id="contactSuccess">
+        <div class="check">✅</div>
+        <h3>Message sent!</h3>
+        <p>Thanks for reaching out. I'll get back to you soon.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HOW I BUILT THIS PANEL ─────────────────────────────────────────── -->
+<div class="built-overlay" id="builtOverlay" onclick="if(event.target===this)closeBuilt()">
+  <div class="built-panel">
+    <div class="built-hero">
+      <button class="built-close" onclick="closeBuilt()">×</button>
+      <h2>How I Built This</h2>
+      <p>A product manager's approach to using AI as a research tool — and why I built a job tracker instead of just using one.</p>
+    </div>
+    <div class="built-content">
+
+      <div class="built-section">
+        <h3>The Problem I Was Solving</h3>
+        <p>After being let go from Credit Acceptance, I knew I wanted to move into a space where the mission actually mattered to me. AgeTech kept coming up — I've watched family members struggle to navigate healthcare, housing, and financial systems as they age, and I kept finding myself drawn to companies trying to fix that.</p>
+        <p>The problem: the AgeTech landscape is massive and scattered. Hundreds of companies, wildly different stages, some well-funded and scaling, others still in PowerPoint mode. I needed a way to cut through the noise systematically — not just a list of company names, but a framework for deciding which ones were actually worth my time.</p>
+      </div>
+
+      <div class="built-section">
+        <h3>The 3-Pillar Evaluation Framework</h3>
+        <p>I developed three filters to quickly assess whether a company was worth pursuing for a Director/Head of Product role:</p>
+
+        <div class="pillar-card">
+          <h4>P1 · Real & Funded</h4>
+          <p>Does the company have an actual product in market — not just a website and a pitch deck? And have they raised enough ($20M+, Series A or higher) to have real runway, organizational structure, and budget for product leadership?</p>
+        </div>
+        <div class="pillar-card">
+          <h4>P2 · Mission Clarity</h4>
+          <p>How clearly and consistently does the company articulate its mission? I look at how they describe themselves, how employees talk about the work on Glassdoor, and whether their product decisions reflect what they say they're building for. This isn't a judgment — it's a signal about alignment.</p>
+        </div>
+        <div class="pillar-card">
+          <h4>P3 · Right Size</h4>
+          <p>50–300 employees is the sweet spot for a Director-level product role. Small enough that you have real influence over culture and direction. Large enough that there's a product function, a team to lead, and enough organizational structure that you're not rebuilding everything from scratch.</p>
+        </div>
+      </div>
+
+      <div class="built-section">
+        <h3>Why I Built a Tool Instead of a Spreadsheet</h3>
+        <p>Honestly, I started with a spreadsheet. But I kept hitting the same wall: job postings are scattered across dozens of different career pages, each formatted differently, updated inconsistently. The data was always stale by the time I got to it.</p>
+        <p>I realized what I actually needed was something that could pull live job data on demand — and since I was already using Claude to help with my search strategy, it made sense to wire the two together. The result is a hybrid: curated company evaluations that I maintain, combined with AI-powered job fetching that pulls current openings when you need them.</p>
+        <p>Building it also gave me something to show — not just a job seeker looking for a product role, but a product thinker who shipped something.</p>
+      </div>
+
+      <div class="built-section">
+        <h3>How It Works Technically</h3>
+        <p>The app is a single HTML file for the frontend, with a serverless backend function hosted on Vercel. When you click "Fetch live jobs," your browser calls my backend — which holds the API key securely and makes the actual call to Anthropic's Claude API. The key never touches your browser.</p>
+        <div class="tech-stack">
+          <span class="tech-tag">HTML / CSS / JS</span>
+          <span class="tech-tag">Vercel Serverless</span>
+          <span class="tech-tag">Anthropic Claude API</span>
+          <span class="tech-tag">Formspree</span>
+          <span class="tech-tag">GitHub</span>
+        </div>
+      </div>
+
+      <div class="built-section">
+        <h3>What I Learned</h3>
+        <p>The framework works. Running 50+ companies through three filters very quickly surfaces a shortlist of 15–20 genuinely compelling targets. It also surfaces the companies that look good on the surface but have mixed signals on mission or are too early-stage to have a real product leadership role.</p>
+        <p>The other thing I learned: direct outreach beats passive applications by a wide margin. The framework gives me something concrete to reference when I reach out to founders and product leaders — it shows I've done the work, not just sent a resume into a black hole.</p>
+      </div>
+
+      <div class="built-cta">
+        <p>If you're building in the AgeTech space — or know someone who is — I'd love to connect.</p>
+        <a href="https://www.linkedin.com/in/andyobryan715" target="_blank">Connect on LinkedIn →</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── MODAL CONTROLS ────────────────────────────────────────────────────────
+  function openAbout()   { document.getElementById('aboutOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeAbout()  { document.getElementById('aboutOverlay').classList.remove('open'); document.body.style.overflow=''; }
+  function openContact() { document.getElementById('contactOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeContact(){ document.getElementById('contactOverlay').classList.remove('open'); document.body.style.overflow=''; }
+  function openBuilt()   { document.getElementById('builtOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeBuilt()  { document.getElementById('builtOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+  // Escape key closes any open overlay
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeAbout(); closeContact(); closeBuilt(); }
+  });
+
+  // ── CONTACT FORM SUBMIT ───────────────────────────────────────────────────
+  async function handleContactSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.contact-submit');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('contactSuccess').style.display = 'block';
+      } else {
+        btn.textContent = 'Something went wrong — try again';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = 'Something went wrong — try again';
+      btn.disabled = false;
+    }
+  }
 </script>
 </body>
 </html>
